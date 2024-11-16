@@ -20,8 +20,6 @@ class PswGenerator(QMainWindow):
         # Conectar el botón "Ver Contrasenas Guardadas" a la función abrir_ventana2
         self.ui.pushButton_2.clicked.connect(self.abrir_ventana2)
 
-        self.psw_guardada = ""
-
     # Lógica para generar contraseña segura
     def logica_contrasena(self, longitud=12):
         # Definir el conjunto de caracteres que se usarán en la contraseña
@@ -36,14 +34,17 @@ class PswGenerator(QMainWindow):
         self.ui.lineEdit.setText(psw)  # Muestra la contraseña en el campo de texto
         self.psw_guardada = psw  # Guarda la contraseña para poder usarla en la función guardar_contrasena
 
+    
     # Guardar la contraseña en la base de datos
     def guardar_contrasena(self):
         psw = self.psw_guardada  # Obtenemos la contraseña guardada en la función generar_contrasena
+        usuario = self.ui.lineEdit_2.text()  # Lo que el usuario escribió en lineEdit_2
+        correo =  self.ui.lineEdit_3.text()   # Lo que el usuario escribió en lineEdit_3
         connection = get_connection()
         if connection:
             try:
                 cursor = connection.cursor()
-                cursor.execute("INSERT INTO dbo.contrasenas (contrasena) VALUES (?)", (psw,))
+                cursor.execute("INSERT INTO dbo.contrasenas (contrasena, usuario, correo) VALUES (?,?,?)", (psw, usuario, correo,))
                 connection.commit()  # Confirmar los cambios
                 print("Contraseña guardada exitosamente")
                 
@@ -72,7 +73,6 @@ class PswGenerator(QMainWindow):
         ventana = Ventana2()
         ventana.cargar_contrasenas()
         ventana.exec_()  # Mostrar la ventana
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

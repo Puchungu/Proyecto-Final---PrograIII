@@ -2,7 +2,7 @@ import pyodbc
 
 def get_connection():
     SERVER = 'localhost'
-    DATABASE = 'contrasena'
+    DATABASE = 'contrasenas'
     try:
         connection = pyodbc.connect(
             f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={SERVER};DATABASE={DATABASE};Trusted_Connection=yes"
@@ -23,7 +23,7 @@ def obtener_contrasenas():
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.execute("SELECT id, contrasena FROM dbo.contrasenas")  # Consulta SQL
+            cursor.execute("SELECT id, contrasena, usuario, correo, fecha_guardado FROM dbo.contrasenas")  # Consulta SQL
             contrasenas = cursor.fetchall()  # Obtener todas las contraseñas
             return contrasenas
         except Exception as e:
@@ -34,6 +34,23 @@ def obtener_contrasenas():
     else:
         return []
     
+def eliminar_contrasena(id_contrasena):
+    connection = get_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM dbo.contrasenas WHERE id = ?", (id_contrasena,))
+            connection.commit()  # Confirmar los cambios
+            print(f"Contraseña con ID {id_contrasena} eliminada exitosamente.")
+            return True  # Éxito
+        except Exception as e:
+            print(f"Error al eliminar la contraseña: {e}")
+            return False  # Error
+        finally:
+            connection.close()  # Cerrar la conexión
+    else:
+        print("No se pudo conectar a la base de datos para eliminar la contraseña")
+        return False  # Error
 
 
     
