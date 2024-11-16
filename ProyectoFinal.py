@@ -1,8 +1,11 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from UI import Ui_MainWindow  # Importar la clase generada de tu archivo UI
 import secrets
 import string
+from DB_Conection import get_connection
+from ventana2 import Ventana2
+
 
 class PswGenerator(QMainWindow):
     def __init__(self):
@@ -12,6 +15,12 @@ class PswGenerator(QMainWindow):
 
         # Conectar el botón "Generar Nueva Contrasena" a la función generar_contrasena
         self.ui.pushButton.clicked.connect(self.generar_contrasena)
+        # Conectar el botón "Guardar Contrasena" a la función guardar_contrasena
+        self.ui.pushButton_3.clicked.connect(self.guardar_contrasena)
+        # Conectar el botón "Ver Contrasenas Guardadas" a la función abrir_ventana2
+        self.ui.pushButton_2.clicked.connect(self.abrir_ventana2)
+
+        self.psw_guardada = ""
 
     # Lógica para generar contraseña segura
     def logica_contrasena(self, longitud=12):
@@ -25,6 +34,44 @@ class PswGenerator(QMainWindow):
         # Generar una nueva contraseña y mostrarla en el QLineEdit (self.ui.lineEdit)
         psw = self.logica_contrasena(16)  # Puedes ajustar la longitud aquí
         self.ui.lineEdit.setText(psw)  # Muestra la contraseña en el campo de texto
+        self.psw_guardada = psw  # Guarda la contraseña para poder usarla en la función guardar_contrasena
+
+    # Guardar la contraseña en la base de datos
+    def guardar_contrasena(self):
+        psw = self.psw_guardada  # Obtenemos la contraseña guardada en la función generar_contrasena
+        connection = get_connection()
+        if connection:
+            try:
+                cursor = connection.cursor()
+                cursor.execute("INSERT INTO dbo.contrasenas (contrasena) VALUES (?)", (psw,))
+                connection.commit()  # Confirmar los cambios
+                print("Contraseña guardada exitosamente")
+                
+                # Mostrar alerta en la interfaz de usuario
+                self.mostrar_alerta("Éxito", "Contraseña guardada exitosamente.")
+            except Exception as e:
+                print(f"Error al guardar la contraseña: {e}")
+                self.mostrar_alerta("Error", "Hubo un problema al guardar la contraseña.")
+            finally:
+                connection.close()  # Cerrar la conexión
+        else:
+            print("No se pudo conectar a la base de datos para guardar la contraseña")
+            self.mostrar_alerta("Error", "No se pudo conectar a la base de datos.")
+
+    # Función para mostrar alertas en la interfaz
+    def mostrar_alerta(self, titulo, mensaje):
+        alert = QMessageBox(self)
+        alert.setIcon(QMessageBox.Information)  # Icono de información
+        alert.setWindowTitle(titulo)  # Título de la ventana
+        alert.setText(mensaje)  # Mensaje que se mostrará
+        alert.setStandardButtons(QMessageBox.Ok)  # Botón de OK
+        alert.exec_()  # Mostrar el cuadro de mensaje
+
+    def abrir_ventana2(self):
+        # Crear instancia de Ventana2
+        ventana = Ventana2()
+        ventana.cargar_contrasenas()
+        ventana.exec_()  # Mostrar la ventana
 
 
 if __name__ == "__main__":
