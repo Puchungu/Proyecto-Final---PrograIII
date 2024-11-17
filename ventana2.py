@@ -1,5 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, QWidget, QHBoxLayout, QMessageBox
 from DB_Conection import obtener_contrasenas, eliminar_contrasena
+from ventana3 import VentanaEditar
+
 
 
 class Ventana2(QDialog):
@@ -39,7 +41,7 @@ class Ventana2(QDialog):
             btnEliminar.setMinimumSize(60, 25)
 
             # Conectar botones con las funciones
-            # btnEditar.clicked.connect(lambda _, row=row_num: self.editar_contrasena(row))
+            btnEditar.clicked.connect(lambda _, row=row_num: self.editar_contrasena(row))
             btnEliminar.clicked.connect(lambda _, row=row_num: self.eliminar_contrasena(row))
 
             # Crear un contenedor para los botones
@@ -63,6 +65,19 @@ class Ventana2(QDialog):
             self.cargar_contrasenas()  # Recargar la tabla después de la eliminación
         else:
             self.mostrar_alerta("Error", "Hubo un problema al eliminar la contraseña.")
+
+    def editar_contrasena(self, row):
+        # Obtener los datos de la contraseña seleccionada
+        id_contrasena = self.tableWidget.item(row, 0).text()
+        contrasena = self.tableWidget.item(row, 1).text()
+        usuario = self.tableWidget.item(row, 2).text()
+        correo = self.tableWidget.item(row, 3).text()
+        fecha_guardado = self.tableWidget.item(row, 4).text()
+
+        # Abrir la ventana de edición pasando los datos seleccionados
+        ventana_editar = VentanaEditar(id_contrasena, contrasena, usuario, correo, fecha_guardado)
+        ventana_editar.exec_()
+        self.cargar_contrasenas()  # Recargar las contraseñas después de editar
 
     # Función para mostrar alertas en la interfaz
     def mostrar_alerta(self, titulo, mensaje):

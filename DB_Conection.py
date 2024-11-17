@@ -16,8 +16,6 @@ def get_connection():
 # Llamamos a la función para ver si todo está funcionando
 get_connection()
 
-
-
 def obtener_contrasenas():
     connection = get_connection()
     if connection:
@@ -50,6 +48,24 @@ def eliminar_contrasena(id_contrasena):
             connection.close()  # Cerrar la conexión
     else:
         print("No se pudo conectar a la base de datos para eliminar la contraseña")
+        return False  # Error
+    
+def editar_contrasena(id_contrasena, contrasena, usuario, correo):
+    connection = get_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("UPDATE dbo.contrasenas SET contrasena = ?, usuario = ?, correo = ? WHERE id = ?", (contrasena, usuario, correo, id_contrasena))
+            connection.commit()  # Confirmar los cambios
+            print(f"Contraseña con ID {id_contrasena} actualizada exitosamente.")
+            return True  # Éxito
+        except Exception as e:
+            print(f"Error al actualizar la contraseña: {e}")
+            return False  # Error
+        finally:
+            connection.close()  # Cerrar la conexión
+    else:
+        print("No se pudo conectar a la base de datos para actualizar la contraseña")
         return False  # Error
 
 
