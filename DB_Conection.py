@@ -1,4 +1,6 @@
 import pyodbc
+from utils import encriptar, desencriptar
+
 
 def get_connection():
     SERVER = 'localhost'
@@ -21,9 +23,20 @@ def obtener_contrasenas():
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.execute("SELECT id, contrasena, usuario, correo, fecha_guardado FROM dbo.contrasenas")  # Consulta SQL
-            contrasenas = cursor.fetchall()  # Obtener todas las contraseñas
-            return contrasenas
+            cursor.execute("SELECT id, contrasena, usuario, correo, fecha_guardado FROM dbo.contrasenas")
+            contrasenas = cursor.fetchall()
+            # Desencriptar cada contraseña antes de devolverla
+            contrasenas_desencriptadas = []
+            for contrasena in contrasenas:
+                id_, contrasena_encriptada, usuario, correo, fecha_guardado = contrasena
+                try:
+                    # Desencriptar la contraseña si está en formato adecuado
+                    contrasena_desencriptada = desencriptar(contrasena_encriptada)
+                    contrasenas_desencriptadas.append((id_, contrasena_desencriptada, usuario, correo, fecha_guardado))
+                except Exception as e:
+                    print(f"Error al desencriptar la contraseña con ID {id_}: {e}")
+                    contrasenas_desencriptadas.append((id_, "Error al desencriptar", usuario, correo, fecha_guardado))
+            return contrasenas_desencriptadas
         except Exception as e:
             print(f"Error al obtener las contraseñas: {e}")
             return []
@@ -31,6 +44,7 @@ def obtener_contrasenas():
             connection.close()  # Cerrar la conexión
     else:
         return []
+
     
 def eliminar_contrasena(id_contrasena):
     connection = get_connection()
@@ -55,7 +69,10 @@ def editar_contrasena(id_contrasena, contrasena, usuario, correo):
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.execute("UPDATE dbo.contrasenas SET contrasena = ?, usuario = ?, correo = ? WHERE id = ?", (contrasena, usuario, correo, id_contrasena))
+            cursor.execute(
+                "UPDATE dbo.contrasenas SET contrasena = ?, usuario = ?, correo = ? WHERE id = ?",
+                (contrasena, usuario, correo, id_contrasena)  # No encriptar de nuevo aquí
+            )
             connection.commit()  # Confirmar los cambios
             print(f"Contraseña con ID {id_contrasena} actualizada exitosamente.")
             return True  # Éxito
@@ -67,6 +84,7 @@ def editar_contrasena(id_contrasena, contrasena, usuario, correo):
     else:
         print("No se pudo conectar a la base de datos para actualizar la contraseña")
         return False  # Error
+
 
 
     

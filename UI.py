@@ -17,6 +17,8 @@ class Ui_MainWindow(object):
         MainWindow.resize(956, 672)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        
+        # Botón de generar nueva contraseña
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(0, 40, 961, 111))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Ignored)
@@ -31,6 +33,8 @@ class Ui_MainWindow(object):
         self.pushButton.setDefault(False)
         self.pushButton.setFlat(False)
         self.pushButton.setObjectName("pushButton")
+        
+        # QLineEdit 1 - Contrasena
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit.setGeometry(QtCore.QRect(0, 150, 961, 41))
         font = QtGui.QFont()
@@ -38,6 +42,9 @@ class Ui_MainWindow(object):
         self.lineEdit.setFont(font)
         self.lineEdit.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit.setPlaceholderText("Contrasena")  # Placeholder para el campo de usuario
+
+        # Botón de ver contraseñas guardadas
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(0, 330, 961, 291))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Ignored)
@@ -52,6 +59,8 @@ class Ui_MainWindow(object):
         self.pushButton_2.setDefault(False)
         self.pushButton_2.setFlat(False)
         self.pushButton_2.setObjectName("pushButton_2")
+        
+        # Botón de guardar contraseña
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_3.setGeometry(QtCore.QRect(0, 290, 961, 41))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Ignored)
@@ -66,6 +75,8 @@ class Ui_MainWindow(object):
         self.pushButton_3.setDefault(False)
         self.pushButton_3.setFlat(False)
         self.pushButton_3.setObjectName("pushButton_3")
+        
+        # Label
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(0, 0, 951, 31))
         font = QtGui.QFont()
@@ -75,6 +86,8 @@ class Ui_MainWindow(object):
         self.label.setScaledContents(False)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
+        
+        # QLineEdit 2 - Usuario
         self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit_2.setGeometry(QtCore.QRect(0, 200, 961, 41))
         font = QtGui.QFont()
@@ -82,6 +95,9 @@ class Ui_MainWindow(object):
         self.lineEdit_2.setFont(font)
         self.lineEdit_2.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_2.setPlaceholderText("Usuario")  # Placeholder para el campo de contraseña
+        
+        # QLineEdit 3 - Correo
         self.lineEdit_3 = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit_3.setGeometry(QtCore.QRect(0, 250, 961, 41))
         font = QtGui.QFont()
@@ -89,6 +105,8 @@ class Ui_MainWindow(object):
         self.lineEdit_3.setFont(font)
         self.lineEdit_3.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit_3.setObjectName("lineEdit_3")
+        self.lineEdit_3.setPlaceholderText("Correo")  # Placeholder para el campo de correo
+        
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 956, 33))

@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QLabel, QPushButton, QMessageBox
 from DB_Conection import editar_contrasena
+from utils import encriptar
 
 
 class VentanaEditar(QDialog):
@@ -43,8 +44,11 @@ class VentanaEditar(QDialog):
         nuevo_usuario = self.txtUsuario.text()
         nuevo_correo = self.txtCorreo.text()
 
-        # Llamar a la función editar_contrasena desde DB_Conection, pasando los nuevos valores
-        if editar_contrasena(self.id_contrasena,nueva_contrasena, nuevo_usuario, nuevo_correo,):
+        # Encriptar la contraseña antes de guardarla
+        nueva_contrasena_encriptada = encriptar(nueva_contrasena)
+
+        # Llamar a la función editar_contrasena con la contraseña encriptada
+        if editar_contrasena(self.id_contrasena, nueva_contrasena_encriptada, nuevo_usuario, nuevo_correo):
             self.mostrar_alerta("Éxito", "Contraseña actualizada exitosamente.")
             self.accept()  # Cerrar la ventana de edición
         else:

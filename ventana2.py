@@ -9,7 +9,7 @@ class Ventana2(QDialog):
         super().__init__()
 
         self.setWindowTitle("Ver Contraseñas")
-        self.setGeometry(200, 200, 800, 400)  # Ajusta el tamaño y posición de la ventana
+        self.setGeometry(300, 300, 900, 500)  # Ajusta el tamaño y posición de la ventana
 
         self.tableWidget = QTableWidget(self)
         self.tableWidget.setColumnCount(6)  # ID, Contraseña, Usuario, Correo, Acciones, Fecha de Guardado

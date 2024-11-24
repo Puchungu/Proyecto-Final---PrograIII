@@ -5,6 +5,7 @@ import secrets
 import string
 from DB_Conection import get_connection
 from ventana2 import Ventana2
+from utils import encriptar
 
 
 class PswGenerator(QMainWindow):
@@ -37,14 +38,22 @@ class PswGenerator(QMainWindow):
     
     # Guardar la contraseña en la base de datos
     def guardar_contrasena(self):
-        psw = self.psw_guardada  # Obtenemos la contraseña guardada en la función generar_contrasena
+        psw = self.psw_guardada  # Obtenemos la contraseña generada en la función generar_contrasena
         usuario = self.ui.lineEdit_2.text()  # Lo que el usuario escribió en lineEdit_2
-        correo =  self.ui.lineEdit_3.text()   # Lo que el usuario escribió en lineEdit_3
+        correo = self.ui.lineEdit_3.text()   # Lo que el usuario escribió en lineEdit_3
+
+        # Encriptar la contraseña antes de guardarla
+        psw_encriptada = encriptar(psw)
+
         connection = get_connection()
         if connection:
             try:
                 cursor = connection.cursor()
-                cursor.execute("INSERT INTO dbo.contrasenas (contrasena, usuario, correo) VALUES (?,?,?)", (psw, usuario, correo,))
+                # Guardar la contraseña encriptada en la base de datos
+                cursor.execute(
+                    "INSERT INTO dbo.contrasenas (contrasena, usuario, correo) VALUES (?,?,?)",
+                    (psw_encriptada, usuario, correo)
+                )
                 connection.commit()  # Confirmar los cambios
                 print("Contraseña guardada exitosamente")
                 
@@ -57,7 +66,7 @@ class PswGenerator(QMainWindow):
                 connection.close()  # Cerrar la conexión
         else:
             print("No se pudo conectar a la base de datos para guardar la contraseña")
-            self.mostrar_alerta("Error", "No se pudo conectar a la base de datos.")
+        
 
     # Función para mostrar alertas en la interfaz
     def mostrar_alerta(self, titulo, mensaje):
